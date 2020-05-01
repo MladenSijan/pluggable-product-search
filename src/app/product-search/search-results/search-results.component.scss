@@ -1,0 +1,45 @@
+.results-wrapper {
+  padding-top: 1.125rem;
+}
+
+header {
+  margin-bottom: 1.25rem;
+
+  h4 {
+    color: #848c97;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
+.result-container {
+  display: grid;
+  grid-gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  grid-template-columns: repeat(5, minmax(150px, 1fr));
+}
+
+footer {
+  text-align: center;
+
+  button {
+    outline: none;
+    color: #79818f;
+    padding: 0.5rem;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 4px;
+    background-color: #eceff3;
+    border: solid 1px #c0cad8;
+    box-shadow: 0 2px 4px 0 rgba(28, 26, 26, 0.2);
+
+    img {
+      user-select: none;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

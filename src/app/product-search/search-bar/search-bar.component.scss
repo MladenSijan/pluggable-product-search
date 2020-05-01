@@ -1,0 +1,25 @@
+.search-control {
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+  }
+
+  .search {
+    margin-right: 2rem;
+  }
+
+  .cancel {
+    margin-left: 2rem;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
