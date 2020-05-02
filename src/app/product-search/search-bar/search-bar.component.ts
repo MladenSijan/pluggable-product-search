@@ -10,7 +10,7 @@ import {SearchService} from '../search.service';
   styleUrls: ['./search-bar.component.scss']
 })
 export class SearchBarComponent implements AfterViewInit, OnDestroy {
-  search: FormControl = new FormControl('');
+  searchControl: FormControl = new FormControl('');
   @ViewChild('searchInput', {static: true}) searchInput: ElementRef;
 
   destroy$: Subject<boolean> = new Subject();
@@ -19,6 +19,8 @@ export class SearchBarComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.searchInput.nativeElement.focus();
+
     fromEvent(this.searchInput.nativeElement, 'input')
       .pipe(debounceTime(250), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((ev: any) => this.searchService.emitValue(ev.target.value));
@@ -30,6 +32,8 @@ export class SearchBarComponent implements AfterViewInit, OnDestroy {
   }
 
   onReset() {
-    this.search.reset();
+    this.searchControl.reset();
+    this.searchControl.setValue('');
+    this.searchService.emitValue('');
   }
 }

@@ -1,23 +1,110 @@
-<section class="results-wrapper">
+<section class="results-wrapper"
+         [class.results-wrapper--open]="true">
+  <!--  [class.results-wrapper&#45;&#45;open]="searchService.isSearchPerformed">-->
+  <div class="divider"></div>
   <header><h4>Results from GIPHY</h4></header>
-  <section>
-    <div class="result-container">
-      <img class="item" width="150px" height="150px">
-      <img class="item" width="150px" height="150px">
-      <img class="item" width="150px" height="150px">
-      <img class="item" width="150px" height="150px">
-      <img class="item" width="150px" height="150px">
+  <section class="result-body">
+    <div class="results-container">
+      <div class="result-item">
+        <div class="overlay"><img src="/assets/svg/download.svg"></div>
+        <figure class="img">
+          <figcaption>
+            <div class="title">Title</div>
+            <div class="tags">#toys, price: 200, stock: 50</div>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="result-item">
+        <div class="overlay"><img src="/assets/svg/download.svg"></div>
+        <figure class="img">
+          <figcaption>
+            <div class="title">Title</div>
+            <div class="tags">#toys, price: 200, stock: 50</div>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="result-item">
+        <div class="overlay"><img src="/assets/svg/download.svg"></div>
+        <figure class="img">
+          <figcaption>
+            <div class="title">Title</div>
+            <div class="tags">#toys, price: 200, stock: 50</div>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="result-item">
+        <div class="overlay"><img src="/assets/svg/download.svg"></div>
+        <figure class="img">
+          <figcaption>
+            <div class="title">Title</div>
+            <div class="tags">#toys, price: 200, stock: 50</div>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="result-item">
+        <div class="overlay"><img src="/assets/svg/download.svg"></div>
+        <figure class="img">
+          <figcaption>
+            <div class="title">Title</div>
+            <div class="tags">#toys, price: 200, stock: 50</div>
+          </figcaption>
+        </figure>
+      </div>
 
-      <img class="item" width="150px" height="150px">
-      <img class="item" width="150px" height="150px">
-      <img class="item" width="150px" height="150px">
-      <img class="item" width="150px" height="150px">
-      <img class="item" width="150px" height="150px">
+      <div class="result-item">
+        <div class="overlay"><img src="/assets/svg/download.svg"></div>
+        <figure class="img">
+          <figcaption>
+            <div class="title">Title</div>
+            <div class="tags">#toys, price: 200, stock: 50</div>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="result-item">
+        <div class="overlay"><img src="/assets/svg/download.svg"></div>
+        <figure class="img">
+          <figcaption>
+            <div class="title">Title</div>
+            <div class="tags">#toys, price: 200, stock: 50</div>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="result-item">
+        <div class="overlay"><img src="/assets/svg/download.svg"></div>
+        <figure class="img">
+          <figcaption>
+            <div class="title">Title</div>
+            <div class="tags">#toys, price: 200, stock: 50</div>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="result-item">
+        <div class="overlay"><img src="/assets/svg/download.svg"></div>
+        <figure class="img">
+          <figcaption>
+            <div class="title">Title</div>
+            <div class="tags">#toys, price: 200, stock: 50</div>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="result-item">
+        <div class="overlay"><img src="/assets/svg/download.svg"></div>
+        <figure class="img">
+          <figcaption>
+            <div class="title">Title</div>
+            <div class="tags">#toys, price: 200, stock: 50</div>
+          </figcaption>
+        </figure>
+      </div>
     </div>
     <footer>
       <button (click)="onRefresh()">
         <img src="/assets/svg/refresh.svg" alt=""> Refresh results
       </button>
     </footer>
+    <app-loader *ngIf="searchService.isLoading"></app-loader>
+    <div class="no-results" *ngIf="!searchService.hasResults">
+      <p>{{searchService.searchValue.length > 0 ? 'No results.' : 'Try another search.'}}</p>
+    </div>
   </section>
 </section>

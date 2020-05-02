@@ -1,29 +1,32 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SearchService} from '../search.service';
 import {Subject} from 'rxjs';
-import {concatMap, takeUntil} from 'rxjs/operators';
+import {concatMap, take, takeUntil} from 'rxjs/operators';
 import {Product} from '../model/product';
+import {ResultItem} from '../model/result-item';
 
 @Component({
   selector: 'app-search-results',
   templateUrl: './search-results.component.html',
-  styleUrls: ['./search-results.component.scss']
+  styleUrls: ['./search-results.component.scss'],
 })
 export class SearchResultsComponent implements OnInit, OnDestroy {
-
   destroy$: Subject<boolean> = new Subject();
 
-  constructor(
-    private searchService: SearchService
-  ) {
+  constructor(public searchService: SearchService) {
   }
 
   ngOnInit(): void {
-    this.searchService.valueChange$.pipe(
-      concatMap(value => this.searchService.searchProducts(value)),
-      takeUntil(this.destroy$)).subscribe((resp: Product[]) => {
+    this.searchService.getCategories()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((resp: any[]) => resp.forEach((category: any) => this.searchService.categories[category.name] = [] as ResultItem[]));
 
-    });
+    this.searchService.valueChange$
+      .pipe(take(1)).subscribe(() => this.searchService.isSearchPerformed = true);
+
+    this.searchService.valueChange$
+      .pipe(concatMap(value => this.searchService.searchProducts(value)), takeUntil(this.destroy$))
+      .subscribe((products: Product[]) => this.searchService.handleResults(products));
   }
 
   ngOnDestroy(): void {
@@ -32,6 +35,6 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   }
 
   onRefresh() {
-
+    this.searchService.emitValue(this.searchService.searchValue);
   }
 }
