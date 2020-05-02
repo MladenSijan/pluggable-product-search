@@ -8,10 +8,31 @@
     flex: 1;
     border: none;
     outline: none;
+    font-size: 1.5rem;
+
+    &::placeholder {
+      color: #c3cddb;
+      font-weight: lighter;
+    }
   }
 
   .search {
     margin-right: 2rem;
+  }
+
+  span {
+    color: #333539;
+    font-weight: 500;
+    font-size: 1.5rem;
+    border-radius: 4px;
+    margin-right: 0.4rem;
+    padding: 0.3rem 0.5rem;
+    transition: background-color 0.2s, color 0.2s;
+
+    &.highlight {
+      color: #770847;
+      background-color: #d955a0;
+    }
   }
 
   .cancel {

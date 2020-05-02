@@ -1,5 +1,6 @@
 <div class="search-control">
   <img class="search" src="/assets/svg/search.svg" alt="">
+  <span [class.highlight]="search.value.length > 0">GIPHY</span>
   <input type="text" placeholder="Search something" [formControl]="search" spellcheck="false">
   <img *ngIf="search.value.length > 0" class="cancel" src="/assets/svg/cancel.svg" alt="" (click)="onReset()">
 </div>
