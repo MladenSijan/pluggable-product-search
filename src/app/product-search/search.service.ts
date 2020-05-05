@@ -4,6 +4,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {catchError} from 'rxjs/operators';
 import {Product} from './model/product';
 import {ProductHandler} from './product-handler';
+import {ResultItem} from './model/result-item';
 
 @Injectable({providedIn: 'root'})
 export class SearchService {
@@ -42,16 +43,64 @@ export class SearchService {
   }
 
   handleResults(products: Product[]) {
-    if (products.length > 0) {
-      products.forEach((product: Product) => {
-        if (this.categories[product.categoy]) {
-          this.categories[product.categoy].push(new ProductHandler().handle(product));
-        }
-      });
-      this.hasResults = true;
+    this.startWebWorker(products);
+    const hasResults = products.length > 0;
+    this.hasResults = hasResults;
+
+    if (hasResults) {
+      // this.worker.postMessage({
+      //   command: 'handleResult',
+      //   data: {categories: this.categories, products}
+      // });
     } else {
-      this.hasResults = false;
+      // this.worker.postMessage({command: 'cleanExistingResult'});
     }
+
+    // this.worker.onmessage = (event) => {
+    //   switch (event.data.message) {
+    //     case 'resultCleaned': {
+    //       for (const category in this.categories) {
+    //         if (this.categories.hasOwnProperty(category)) {
+    //           this.categories[category] = [];
+    //         }
+    //       }
+    //       if (this.worker) {
+    //         this.worker.terminate();
+    //       }
+    //       break;
+    //     }
+    //     case 'resultHandled': {
+    //
+    //       break;
+    //     }
+    //   }
+    //   setTimeout(() => this.isLoading = false, 500);
+    // };
     setTimeout(() => this.isLoading = false, 500);
+  }
+
+  requestToRender() {
+    for (const category in this.categories) {
+      if (this.categories.hasOwnProperty(category) && this.categories[category].length > 0) {
+        const items: ResultItem[] = this.categories[category];
+        // send message to render each item
+        items.forEach(item => console.log(item));
+      }
+    }
+  }
+
+  startWebWorker(products) {
+    if (typeof Worker !== 'undefined') {
+      const worker = new Worker('../worker/products.worker', {type: 'module'});
+      worker.onmessage = ({data}) => {
+        console.log(`page got message: ${data}`);
+      };
+      worker.postMessage({
+        command: 'handleResult',
+        data: {categories: this.categories, products}
+      });
+    } else {
+      console.log(`Web Workers are not supported in this environment.`);
+    }
   }
 }

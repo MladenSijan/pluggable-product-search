@@ -7,7 +7,7 @@ export class ProductHandler implements Handler {
     return {
       title: product.title,
       imageUrl: product.imageUrl,
-      tags: [`category: ${product.categoy}`, `price: ${product.price}`, `stock: ${product.stock}`],
+      tags: [`#${product.categoy}`, `#${product.price}€`, `#${product.stock} in stock`],
     };
   }
 }

@@ -1,101 +1,13 @@
 <section class="results-wrapper"
-         [class.results-wrapper--open]="true">
-  <!--  [class.results-wrapper&#45;&#45;open]="searchService.isSearchPerformed">-->
+         [class.results-wrapper--open]="searchService.isSearchPerformed">
+  <!--         [class.results-wrapper&#45;&#45;open]="true">-->
   <div class="divider"></div>
   <header><h4>Results from GIPHY</h4></header>
   <section class="result-body">
     <div class="results-container">
-      <div class="result-item">
-        <div class="overlay"><img src="/assets/svg/download.svg"></div>
-        <figure class="img">
-          <figcaption>
-            <div class="title">Title</div>
-            <div class="tags">#toys, price: 200, stock: 50</div>
-          </figcaption>
-        </figure>
-      </div>
-      <div class="result-item">
-        <div class="overlay"><img src="/assets/svg/download.svg"></div>
-        <figure class="img">
-          <figcaption>
-            <div class="title">Title</div>
-            <div class="tags">#toys, price: 200, stock: 50</div>
-          </figcaption>
-        </figure>
-      </div>
-      <div class="result-item">
-        <div class="overlay"><img src="/assets/svg/download.svg"></div>
-        <figure class="img">
-          <figcaption>
-            <div class="title">Title</div>
-            <div class="tags">#toys, price: 200, stock: 50</div>
-          </figcaption>
-        </figure>
-      </div>
-      <div class="result-item">
-        <div class="overlay"><img src="/assets/svg/download.svg"></div>
-        <figure class="img">
-          <figcaption>
-            <div class="title">Title</div>
-            <div class="tags">#toys, price: 200, stock: 50</div>
-          </figcaption>
-        </figure>
-      </div>
-      <div class="result-item">
-        <div class="overlay"><img src="/assets/svg/download.svg"></div>
-        <figure class="img">
-          <figcaption>
-            <div class="title">Title</div>
-            <div class="tags">#toys, price: 200, stock: 50</div>
-          </figcaption>
-        </figure>
-      </div>
-
-      <div class="result-item">
-        <div class="overlay"><img src="/assets/svg/download.svg"></div>
-        <figure class="img">
-          <figcaption>
-            <div class="title">Title</div>
-            <div class="tags">#toys, price: 200, stock: 50</div>
-          </figcaption>
-        </figure>
-      </div>
-      <div class="result-item">
-        <div class="overlay"><img src="/assets/svg/download.svg"></div>
-        <figure class="img">
-          <figcaption>
-            <div class="title">Title</div>
-            <div class="tags">#toys, price: 200, stock: 50</div>
-          </figcaption>
-        </figure>
-      </div>
-      <div class="result-item">
-        <div class="overlay"><img src="/assets/svg/download.svg"></div>
-        <figure class="img">
-          <figcaption>
-            <div class="title">Title</div>
-            <div class="tags">#toys, price: 200, stock: 50</div>
-          </figcaption>
-        </figure>
-      </div>
-      <div class="result-item">
-        <div class="overlay"><img src="/assets/svg/download.svg"></div>
-        <figure class="img">
-          <figcaption>
-            <div class="title">Title</div>
-            <div class="tags">#toys, price: 200, stock: 50</div>
-          </figcaption>
-        </figure>
-      </div>
-      <div class="result-item">
-        <div class="overlay"><img src="/assets/svg/download.svg"></div>
-        <figure class="img">
-          <figcaption>
-            <div class="title">Title</div>
-            <div class="tags">#toys, price: 200, stock: 50</div>
-          </figcaption>
-        </figure>
-      </div>
+      <iframe #searchResults sandbox="allow-scripts allow-same-origin" id="sandboxed"
+              src="/assets/plugins/search-result-renderer/search-result.html">
+      </iframe>
     </div>
     <footer>
       <button (click)="onRefresh()">
