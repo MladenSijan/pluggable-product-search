@@ -27,8 +27,6 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     this.searchService.valueChange$
       .pipe(concatMap(value => this.searchService.searchProducts(value)), takeUntil(this.destroy$))
       .subscribe((products: Product[]) => this.searchService.handleResults(products));
-
-    this.searchService.emitValue('zz');
   }
 
   ngOnDestroy(): void {

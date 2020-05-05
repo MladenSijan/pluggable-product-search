@@ -12,6 +12,8 @@ export class SearchService {
   private valueChangeSubject: Subject<string> = new Subject();
   public valueChange$ = this.valueChangeSubject.asObservable();
 
+  worker: Worker;
+
   isLoading = false;
   hasResults = false;
   categories: any = {};
@@ -43,62 +45,48 @@ export class SearchService {
   }
 
   handleResults(products: Product[]) {
-    this.startWebWorker(products);
+    if (this.worker) {
+      this.worker.terminate();
+    }
+    this.startWebWorker();
+
     const hasResults = products.length > 0;
     this.hasResults = hasResults;
 
     if (hasResults) {
-      // this.worker.postMessage({
-      //   command: 'handleResult',
-      //   data: {categories: this.categories, products}
-      // });
-    } else {
-      // this.worker.postMessage({command: 'cleanExistingResult'});
-    }
-
-    // this.worker.onmessage = (event) => {
-    //   switch (event.data.message) {
-    //     case 'resultCleaned': {
-    //       for (const category in this.categories) {
-    //         if (this.categories.hasOwnProperty(category)) {
-    //           this.categories[category] = [];
-    //         }
-    //       }
-    //       if (this.worker) {
-    //         this.worker.terminate();
-    //       }
-    //       break;
-    //     }
-    //     case 'resultHandled': {
-    //
-    //       break;
-    //     }
-    //   }
-    //   setTimeout(() => this.isLoading = false, 500);
-    // };
-    setTimeout(() => this.isLoading = false, 500);
-  }
-
-  requestToRender() {
-    for (const category in this.categories) {
-      if (this.categories.hasOwnProperty(category) && this.categories[category].length > 0) {
-        const items: ResultItem[] = this.categories[category];
-        // send message to render each item
-        items.forEach(item => console.log(item));
-      }
-    }
-  }
-
-  startWebWorker(products) {
-    if (typeof Worker !== 'undefined') {
-      const worker = new Worker('../worker/products.worker', {type: 'module'});
-      worker.onmessage = ({data}) => {
-        console.log(`page got message: ${data}`);
-      };
-      worker.postMessage({
+      this.worker.postMessage({
         command: 'handleResult',
         data: {categories: this.categories, products}
       });
+    } else {
+      this.worker.postMessage({command: 'cleanExistingResult'});
+    }
+
+    setTimeout(() => this.isLoading = false, 500);
+  }
+
+  startWebWorker() {
+    if (typeof Worker !== 'undefined') {
+      this.worker = new Worker('../worker/products.worker', {type: 'module'});
+      this.worker.onmessage = ({data}) => {
+        switch (data.message) {
+          case 'resultCleaned': {
+            for (const category in this.categories) {
+              if (this.categories.hasOwnProperty(category)) {
+                this.categories[category] = [];
+              }
+            }
+            if (this.worker) {
+              this.worker.terminate();
+            }
+            break;
+          }
+          case 'resultHandled': {
+            console.log(data);
+            break;
+          }
+        }
+      };
     } else {
       console.log(`Web Workers are not supported in this environment.`);
     }
