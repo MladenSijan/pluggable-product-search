@@ -13,8 +13,8 @@ export class SearchService {
   public valueChange$ = this.valueChangeSubject.asObservable();
 
   worker: Worker;
-  channel: MessageChannel = new MessageChannel();
   plugin: HTMLIFrameElement;
+  channel: MessageChannel = new MessageChannel();
 
   private messageSubject: Subject<string> = new Subject();
   messageEmit$ = this.messageSubject.asObservable();
@@ -77,7 +77,7 @@ export class SearchService {
       this.worker.onmessage = ({data}) => {
         switch (data.message) {
           case 'resultHandled': {
-            this.emitMessage(JSON.stringify({message: 'requestToRender', data}));
+            this.emitMessage(JSON.stringify({message: 'requestToRender', data: data.resultItems}));
             break;
           }
           case 'resultCleaned': {
@@ -98,6 +98,10 @@ export class SearchService {
     }
   }
 
+  emitMessage(message: string) {
+    this.messageSubject.next(message);
+  }
+
   setPlugin(plugin: HTMLIFrameElement) {
     this.plugin = plugin;
   }
@@ -107,18 +111,24 @@ export class SearchService {
       const result = JSON.parse(data);
       switch (result.message) {
         case 'renderingFinished': {
-
+          console.log(result);
+          break;
+        }
+        case 'downloadImage': {
+          console.log(result);
           break;
         }
       }
     };
-  }
 
-  emitMessage(message: string) {
-    this.messageSubject.next(message);
+    this.plugin.contentWindow.postMessage('init', '*', [this.channel.port2]);
   }
 
   sendMessageToPlugin(message: string) {
-    this.plugin.contentWindow.postMessage(message, '*', [this.channel.port2]);
+    try {
+      this.channel.port1.postMessage(message);
+    } catch (e) {
+      console.log('prc ', e);
+    }
   }
 }

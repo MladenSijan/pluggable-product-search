@@ -27,8 +27,6 @@
   };
 
   this.Plugin.prototype.render = function (item) {
-    document.getElementById('results-container').innerHTML = "";
-
     if (typeof item === 'object' && 'title' in item && 'imageUrl' in item && 'tags' in item) {
       this.overlay = document.createElement('div');
       this.downloadIcon = document.createElement('img');
@@ -61,23 +59,51 @@
       this.resultItem.appendChild(this.figure);
       document.getElementById('results-container').appendChild(this.resultItem);
     }
-
-    function onImageDownload(url) {
-      return function () {
-        // send message with url
-      }
-    }
   };
+
+  function onImageDownload(url) {
+    return function () {
+      console.log(url);
+      // send message with url
+    }
+  }
 })();
 
 var plugin = new Plugin();
-plugin.render({
-  title: 'Pizza',
-  tags: ['#Toys', '#20eur', '#50InStock'],
-  imageUrl: 'https://i.picsum.photos/id/787/400/400.jpg'
-});
+var port2;
 
 window.addEventListener('message', function (e) {
-  console.log(e);
-  e.ports[0].postMessage(JSON.stringify({message: 'renderingFinished'}));
+  port2 = e.ports[0];
+
+  port2.onmessage = function(event) {
+    var data = JSON.parse(event.data);
+    switch (data.message) {
+      case 'requestToRender': {
+        var items = data.data;
+        var length = items.length;
+
+        document.getElementById('results-container').innerHTML = "";
+
+        for (var i = 0; i < length; i++) {
+          for (var j = 0; j < items[i].length; j++) {
+            plugin.render(items[i][j]);
+          }
+        }
+
+        e.ports[0].postMessage(JSON.stringify({message: 'renderingFinished'}));
+        break;
+      }
+      case 'clean': {
+        for (const category in this.categories) {
+          if (this.categories.hasOwnProperty(category)) {
+            this.categories[category] = [];
+          }
+        }
+        if (this.worker) {
+          this.worker.terminate();
+        }
+        break;
+      }
+    }
+  }
 }, false);

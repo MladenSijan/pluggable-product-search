@@ -16,15 +16,13 @@ addEventListener('message', ({data}) => {
         }
       });
 
+      const resultItems = [];
       for (const category in categories) {
         if (categories.hasOwnProperty(category) && categories[category].length > 0) {
-          const items: ResultItem[] = categories[category];
-          // send message to render each item
-          // items.forEach(item => console.log(item));
+          resultItems.push(categories[category]);
         }
       }
-
-      postMessage({message: 'resultHandled'});
+      postMessage({message: 'resultHandled', resultItems});
       break;
     }
     case 'cleanExistingResult': {
