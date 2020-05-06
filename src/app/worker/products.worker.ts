@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 import {Product} from '../product-search/model/product';
-import {ProductHandler} from '../product-search/product-handler';
 import {ResultItem} from '../product-search/model/result-item';
+import {ProductHandler} from '../product-search/product-handler';
 
 addEventListener('message', ({data}) => {
   switch (data.command) {

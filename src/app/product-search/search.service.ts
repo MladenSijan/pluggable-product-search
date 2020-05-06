@@ -13,6 +13,11 @@ export class SearchService {
   public valueChange$ = this.valueChangeSubject.asObservable();
 
   worker: Worker;
+  channel: MessageChannel = new MessageChannel();
+  plugin: HTMLIFrameElement;
+
+  private messageSubject: Subject<string> = new Subject();
+  messageEmit$ = this.messageSubject.asObservable();
 
   isLoading = false;
   hasResults = false;
@@ -44,7 +49,7 @@ export class SearchService {
     }
   }
 
-  handleResults(products: Product[]) {
+  handleResult(products: Product[]) {
     if (this.worker) {
       this.worker.terminate();
     }
@@ -68,8 +73,13 @@ export class SearchService {
   startWebWorker() {
     if (typeof Worker !== 'undefined') {
       this.worker = new Worker('../worker/products.worker', {type: 'module'});
+
       this.worker.onmessage = ({data}) => {
         switch (data.message) {
+          case 'resultHandled': {
+            this.emitMessage(JSON.stringify({message: 'requestToRender', data}));
+            break;
+          }
           case 'resultCleaned': {
             for (const category in this.categories) {
               if (this.categories.hasOwnProperty(category)) {
@@ -81,14 +91,34 @@ export class SearchService {
             }
             break;
           }
-          case 'resultHandled': {
-            console.log(data);
-            break;
-          }
         }
       };
     } else {
       console.log(`Web Workers are not supported in this environment.`);
     }
+  }
+
+  setPlugin(plugin: HTMLIFrameElement) {
+    this.plugin = plugin;
+  }
+
+  listenForPluginChanges() {
+    this.channel.port1.onmessage = ({data}) => {
+      const result = JSON.parse(data);
+      switch (result.message) {
+        case 'renderingFinished': {
+
+          break;
+        }
+      }
+    };
+  }
+
+  emitMessage(message: string) {
+    this.messageSubject.next(message);
+  }
+
+  sendMessageToPlugin(message: string) {
+    this.plugin.contentWindow.postMessage(message, '*', [this.channel.port2]);
   }
 }

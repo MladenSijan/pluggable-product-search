@@ -19,14 +19,25 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.searchService.getCategories()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((resp: any[]) => resp.forEach((category: any) => this.searchService.categories[category.id] = [] as ResultItem[]));
+      .subscribe((resp: any[]) => {
+        resp.forEach((category: any) => this.searchService.categories[category.id] = [] as ResultItem[]);
+      });
 
     this.searchService.valueChange$
       .pipe(take(1)).subscribe(() => this.searchService.isSearchPerformed = true);
 
     this.searchService.valueChange$
       .pipe(concatMap(value => this.searchService.searchProducts(value)), takeUntil(this.destroy$))
-      .subscribe((products: Product[]) => this.searchService.handleResults(products));
+      .subscribe((products: Product[]) => this.searchService.handleResult(products));
+
+    this.searchService.setPlugin(document.getElementById('plugin') as HTMLIFrameElement);
+
+    this.searchService.plugin.addEventListener('load', () => {
+      this.searchService.listenForPluginChanges();
+      this.searchService.messageEmit$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(message => this.searchService.sendMessageToPlugin(message));
+    }, false);
   }
 
   ngOnDestroy(): void {

@@ -1,11 +1,10 @@
 <section class="results-wrapper"
          [class.results-wrapper--open]="searchService.isSearchPerformed">
-  <!--         [class.results-wrapper&#45;&#45;open]="true">-->
   <div class="divider"></div>
   <header><h4>Results from GIPHY</h4></header>
   <section class="result-body">
     <div class="results-container">
-      <iframe #searchResults sandbox="allow-scripts allow-same-origin" id="sandboxed"
+      <iframe id="plugin" sandbox="allow-scripts allow-same-origin"
               src="/assets/plugins/search-result-renderer/search-result.html">
       </iframe>
     </div>
