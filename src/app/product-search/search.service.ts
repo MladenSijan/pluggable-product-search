@@ -3,8 +3,6 @@ import {of, Subject} from 'rxjs';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {catchError} from 'rxjs/operators';
 import {Product} from './model/product';
-import {ProductHandler} from './product-handler';
-import {ResultItem} from './model/result-item';
 
 @Injectable({providedIn: 'root'})
 export class SearchService {
@@ -67,6 +65,7 @@ export class SearchService {
       this.worker.postMessage({command: 'cleanExistingResult'});
     }
 
+    // this.isLoading = false;
     setTimeout(() => this.isLoading = false, 500);
   }
 
@@ -100,35 +99,5 @@ export class SearchService {
 
   emitMessage(message: string) {
     this.messageSubject.next(message);
-  }
-
-  setPlugin(plugin: HTMLIFrameElement) {
-    this.plugin = plugin;
-  }
-
-  listenForPluginChanges() {
-    this.channel.port1.onmessage = ({data}) => {
-      const result = JSON.parse(data);
-      switch (result.message) {
-        case 'renderingFinished': {
-          console.log(result);
-          break;
-        }
-        case 'downloadImage': {
-          console.log(result);
-          break;
-        }
-      }
-    };
-
-    this.plugin.contentWindow.postMessage('init', '*', [this.channel.port2]);
-  }
-
-  sendMessageToPlugin(message: string) {
-    try {
-      this.channel.port1.postMessage(message);
-    } catch (e) {
-      console.log('prc ', e);
-    }
   }
 }

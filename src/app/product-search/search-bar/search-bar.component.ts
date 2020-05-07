@@ -22,7 +22,7 @@ export class SearchBarComponent implements AfterViewInit, OnDestroy {
     this.searchInput.nativeElement.focus();
 
     fromEvent(this.searchInput.nativeElement, 'input')
-      .pipe(debounceTime(250), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(debounceTime(350), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((ev: any) => this.searchService.emitValue(ev.target.value));
   }
 

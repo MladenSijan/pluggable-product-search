@@ -1,17 +1,3 @@
-// var code = 'self.postMessage({text: "sandbox created"});';
-// var url = window.URL.createObjectURL(
-//   new Blob([code], {type: 'text/javascript'})
-// );
-//
-// var worker = new Worker(url);
-//
-// // window.URL.revokeObjectURL(url);
-//
-// // forwarding messages to parent
-// worker.addEventListener('message', function (m) {
-//   parent.postMessage(m.data, '*');
-// });
-
 (function () {
   this.Plugin = function () {
     this.counter = 0;
@@ -24,6 +10,7 @@
     this.figcaption = null;
     this.title = null;
     this.tags = null;
+    this.label = null;
   };
 
   this.Plugin.prototype.render = function (item) {
@@ -35,10 +22,11 @@
       this.figcaption = document.createElement('figcaption');
       this.title = document.createElement('div');
       this.tags = document.createElement('div');
+      this.label = document.createElement('div');
 
       this.overlay.classList.add('overlay');
       this.overlay.appendChild(this.downloadIcon);
-      this.overlay.addEventListener('click', onImageDownload(item.imageUrl));
+      this.overlay.addEventListener('click', onImageDownload(item.title, item.imageUrl));
       this.downloadIcon.setAttribute('src', './download.svg');
 
       this.resultItem.classList.add('result-item');
@@ -47,13 +35,16 @@
       this.figure.style.background = this.backgroundImage + 'url("' + item.imageUrl + '")';
       this.title.classList.add('title');
       this.tags.classList.add('tags');
+      this.label.classList.add('label');
 
+      this.figure.appendChild(this.label);
       this.figure.appendChild(this.figcaption);
       this.figcaption.appendChild(this.title);
       this.figcaption.appendChild(this.tags);
 
       this.title.textContent = item.title || 'untitled';
-      this.tags.textContent = item.tags.length > 0 ? item.tags.join(' ') : null;
+      this.label.textContent = item.tags.length > 0 ? item.tags[0] : '';
+      this.tags.textContent = item.tags.length > 0 ? item.tags.slice(1, 3).join(' ') : null;
 
       this.resultItem.appendChild(this.overlay);
       this.resultItem.appendChild(this.figure);
@@ -61,10 +52,9 @@
     }
   };
 
-  function onImageDownload(url) {
+  function onImageDownload(title, url) {
     return function () {
-      console.log(url);
-      // send message with url
+      port2.postMessage(JSON.stringify({message: 'downloadImage', data: {title, downloadUrl: url}}));
     }
   }
 })();
@@ -75,7 +65,7 @@ var port2;
 window.addEventListener('message', function (e) {
   port2 = e.ports[0];
 
-  port2.onmessage = function(event) {
+  port2.onmessage = function (event) {
     var data = JSON.parse(event.data);
     switch (data.message) {
       case 'requestToRender': {
@@ -90,18 +80,11 @@ window.addEventListener('message', function (e) {
           }
         }
 
-        e.ports[0].postMessage(JSON.stringify({message: 'renderingFinished'}));
+        port2.postMessage(JSON.stringify({message: 'renderingFinished'}));
         break;
       }
       case 'clean': {
-        for (const category in this.categories) {
-          if (this.categories.hasOwnProperty(category)) {
-            this.categories[category] = [];
-          }
-        }
-        if (this.worker) {
-          this.worker.terminate();
-        }
+
         break;
       }
     }
