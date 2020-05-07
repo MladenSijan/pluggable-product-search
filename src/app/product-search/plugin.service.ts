@@ -16,13 +16,12 @@ export class PluginService {
     this.channel.port1.onmessage = ({data}) => {
       const result = JSON.parse(data);
       switch (result.message) {
-        case 'renderingFinished': {
-          break;
-        }
         case 'downloadImage': {
-          this.downloadImage(result.data.title, result.data.downloadUrl);
+          this.downloadImage(result.data);
           break;
         }
+        default:
+          return;
       }
     };
 
@@ -30,25 +29,23 @@ export class PluginService {
   }
 
   sendMessage(message: string) {
-    try {
-      this.channel.port1.postMessage(message);
-    } catch (e) {
-      console.log('Error: ', e);
-    }
+    this.channel.port1.postMessage(message);
   }
 
-  downloadImage(title: string, resourceUrl: string) {
+  downloadImage(data: { title: string, downloadUrl: string }) {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', resourceUrl);
+    xhr.open('GET', data.downloadUrl);
     xhr.responseType = 'blob';
     xhr.onload = (e) => {
-      const urlCreator = window.URL || window.webkitURL;
-      const url = urlCreator.createObjectURL(xhr.response);
-      const link = document.createElement('a') as HTMLAnchorElement;
-      link.download = `${title.split(' ').join('-')}.jpg`;
-      link.href = url;
-      link.click();
-      URL.revokeObjectURL(link.href);
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        const urlCreator = window.URL || window.webkitURL;
+        const url = urlCreator.createObjectURL(xhr.response);
+        const link = document.createElement('a') as HTMLAnchorElement;
+        link.download = `${data.title.split(' ').join('-')}.jpg`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(link.href);
+      }
     };
     xhr.send();
   }

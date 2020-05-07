@@ -11,8 +11,6 @@ export class SearchService {
   public valueChange$ = this.valueChangeSubject.asObservable();
 
   worker: Worker;
-  plugin: HTMLIFrameElement;
-  channel: MessageChannel = new MessageChannel();
 
   private messageSubject: Subject<string> = new Subject();
   messageEmit$ = this.messageSubject.asObservable();
@@ -53,19 +51,17 @@ export class SearchService {
     }
     this.startWebWorker();
 
-    const hasResults = products.length > 0;
-    this.hasResults = hasResults;
+    this.hasResults = products.length > 0;
 
-    if (hasResults) {
+    if (this.hasResults) {
       this.worker.postMessage({
         command: 'handleResult',
         data: {categories: this.categories, products}
       });
     } else {
-      this.worker.postMessage({command: 'cleanExistingResult'});
+      this.emitMessage(JSON.stringify({message: 'clear'}));
     }
 
-    // this.isLoading = false;
     setTimeout(() => this.isLoading = false, 500);
   }
 
@@ -79,21 +75,12 @@ export class SearchService {
             this.emitMessage(JSON.stringify({message: 'requestToRender', data: data.resultItems}));
             break;
           }
-          case 'resultCleaned': {
-            for (const category in this.categories) {
-              if (this.categories.hasOwnProperty(category)) {
-                this.categories[category] = [];
-              }
-            }
-            if (this.worker) {
-              this.worker.terminate();
-            }
-            break;
-          }
+          default:
+            return;
         }
       };
     } else {
-      console.log(`Web Workers are not supported in this environment.`);
+      alert(`Web Workers are not supported in this environment.`);
     }
   }
 

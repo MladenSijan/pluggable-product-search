@@ -52,6 +52,20 @@
     }
   };
 
+  this.Plugin.prototype.clear = function (clearAll) {
+    if (clearAll) {
+      document.getElementById('results-container').innerHTML = "";
+    }
+    this.resultItem = null;
+    this.overlay = null;
+    this.downloadIcon = null;
+    this.figure = null;
+    this.figcaption = null;
+    this.title = null;
+    this.tags = null;
+    this.label = null;
+  };
+
   function onImageDownload(title, url) {
     return function () {
       port2.postMessage(JSON.stringify({message: 'downloadImage', data: {title, downloadUrl: url}}));
@@ -79,12 +93,12 @@ window.addEventListener('message', function (e) {
             plugin.render(items[i][j]);
           }
         }
-
+        plugin.clear();
         port2.postMessage(JSON.stringify({message: 'renderingFinished'}));
         break;
       }
-      case 'clean': {
-
+      case 'clear': {
+        plugin.clear(true);
         break;
       }
     }

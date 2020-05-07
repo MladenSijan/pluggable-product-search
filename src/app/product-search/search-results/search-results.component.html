@@ -7,15 +7,15 @@
       <iframe id="plugin" sandbox="allow-scripts allow-same-origin"
               src="/assets/plugins/search-result-renderer/search-result.html">
       </iframe>
+      <div class="no-results" *ngIf="!searchService.hasResults">
+        <p>{{searchService.searchValue.length > 0 ? 'No results.' : 'Try another search.'}}</p>
+      </div>
     </div>
     <footer>
-      <button (click)="onRefresh()">
+      <button (click)="onRefresh()" *ngIf="searchService.searchValue.length > 0">
         <img src="/assets/svg/refresh.svg" alt=""> Refresh results
       </button>
     </footer>
     <app-loader *ngIf="searchService.isLoading"></app-loader>
-    <div class="no-results" *ngIf="!searchService.hasResults">
-      <p>{{searchService.searchValue.length > 0 ? 'No results.' : 'Try another search.'}}</p>
-    </div>
   </section>
 </section>

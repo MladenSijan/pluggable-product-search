@@ -1,6 +1,5 @@
 /// <reference lib="webworker" />
 import {Product} from '../product-search/model/product';
-import {ResultItem} from '../product-search/model/result-item';
 import {ProductHandler} from '../product-search/product-handler';
 
 addEventListener('message', ({data}) => {
@@ -25,9 +24,7 @@ addEventListener('message', ({data}) => {
       postMessage({message: 'resultHandled', resultItems});
       break;
     }
-    case 'cleanExistingResult': {
-      postMessage({message: 'resultCleaned'});
-      break;
-    }
+    default:
+      return;
   }
 });
