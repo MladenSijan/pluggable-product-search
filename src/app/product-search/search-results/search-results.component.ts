@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SearchService} from '../search.service';
 import {Subject} from 'rxjs';
-import {concatMap, take, takeUntil} from 'rxjs/operators';
+import {switchMap, take, takeUntil} from 'rxjs/operators';
 import {Product} from '../model/product';
 import {PluginService} from '../plugin.service';
 
@@ -26,7 +26,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       .pipe(take(1)).subscribe(() => this.searchService.isSearchPerformed = true);
 
     this.searchService.valueChange$
-      .pipe(concatMap(value => this.searchService.searchProducts(value)), takeUntil(this.destroy$))
+      .pipe(switchMap(value => this.searchService.searchProducts(value)), takeUntil(this.destroy$))
       .subscribe((products: Product[]) => this.searchService.handleResult(products));
 
     this.pluginService.setPlugin(document.getElementById('plugin') as HTMLIFrameElement);
