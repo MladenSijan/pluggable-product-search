@@ -3,6 +3,7 @@ import {of, Subject} from 'rxjs';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {catchError} from 'rxjs/operators';
 import {Product} from './model/product';
+import {ResultItem} from './model/result-item';
 
 @Injectable({providedIn: 'root'})
 export class SearchService {
@@ -30,7 +31,10 @@ export class SearchService {
   }
 
   getCategories() {
-    return this.http.get(`${this.url}/categories`).pipe(catchError(err => of([])));
+    this.http.get(`${this.url}/categories`)
+      .pipe(catchError(err => of([])))
+      .toPromise()
+      .then((resp: any[]) => resp.forEach((category: any) => this.categories[category.id] = [] as ResultItem[]));
   }
 
   searchProducts(value: string) {
@@ -49,17 +53,16 @@ export class SearchService {
     if (this.worker) {
       this.worker.terminate();
     }
-    this.startWebWorker();
 
     this.hasResults = products.length > 0;
-
     if (this.hasResults) {
+      this.startWebWorker();
       this.worker.postMessage({
         command: 'handleResult',
         data: {categories: this.categories, products}
       });
     } else {
-      this.emitMessage(JSON.stringify({message: 'clear'}));
+      this.emitMessage({message: 'clear'});
     }
 
     setTimeout(() => this.isLoading = false, 500);
@@ -72,7 +75,7 @@ export class SearchService {
       this.worker.onmessage = ({data}) => {
         switch (data.message) {
           case 'resultHandled': {
-            this.emitMessage(JSON.stringify({message: 'requestToRender', data: data.resultItems}));
+            this.emitMessage({message: 'requestToRender', data: data.resultItems});
             break;
           }
           default:
@@ -84,7 +87,7 @@ export class SearchService {
     }
   }
 
-  emitMessage(message: string) {
+  emitMessage(message: any) {
     this.messageSubject.next(message);
   }
 }

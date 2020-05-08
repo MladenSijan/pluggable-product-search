@@ -68,7 +68,7 @@
 
   function onImageDownload(title, url) {
     return function () {
-      port2.postMessage(JSON.stringify({message: 'downloadImage', data: {title, downloadUrl: url}}));
+      port2.postMessage({message: 'downloadImage', data: {title, downloadUrl: url}});
     }
   }
 })();
@@ -80,7 +80,7 @@ window.addEventListener('message', function (e) {
   port2 = e.ports[0];
 
   port2.onmessage = function (event) {
-    var data = JSON.parse(event.data);
+    var data = event.data;
     switch (data.message) {
       case 'requestToRender': {
         var items = data.data;
@@ -94,7 +94,7 @@ window.addEventListener('message', function (e) {
           }
         }
         plugin.clear();
-        port2.postMessage(JSON.stringify({message: 'renderingFinished'}));
+        port2.postMessage({message: 'renderingFinished'});
         break;
       }
       case 'clear': {

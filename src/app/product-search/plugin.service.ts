@@ -14,10 +14,9 @@ export class PluginService {
 
   listenForChanges() {
     this.channel.port1.onmessage = ({data}) => {
-      const result = JSON.parse(data);
-      switch (result.message) {
+      switch (data.message) {
         case 'downloadImage': {
-          this.downloadImage(result.data);
+          this.downloadImage(data.data);
           break;
         }
         default:

@@ -3,7 +3,6 @@ import {SearchService} from '../search.service';
 import {Subject} from 'rxjs';
 import {concatMap, take, takeUntil} from 'rxjs/operators';
 import {Product} from '../model/product';
-import {ResultItem} from '../model/result-item';
 import {PluginService} from '../plugin.service';
 
 @Component({
@@ -21,11 +20,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.searchService.getCategories()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((resp: any[]) => {
-        resp.forEach((category: any) => this.searchService.categories[category.id] = [] as ResultItem[]);
-      });
+    this.searchService.getCategories();
 
     this.searchService.valueChange$
       .pipe(take(1)).subscribe(() => this.searchService.isSearchPerformed = true);
