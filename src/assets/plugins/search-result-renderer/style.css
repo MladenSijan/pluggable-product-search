@@ -1,0 +1,173 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+#results-container {
+  height: 400px;
+  display: grid;
+  overflow-y: auto;
+  grid-gap: 1.25rem;
+  overflow-x: hidden;
+  align-items: flex-start;
+  grid-template-columns: repeat(5, minmax(150px, 1fr));
+
+  -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: fadein 2s; /* Firefox < 16 */
+  -ms-animation: fadein 2s; /* Internet Explorer */
+  -o-animation: fadein 2s; /* Opera < 12.1 */
+  animation: fadein 2s;
+}
+
+.result-item {
+  max-width: 150px;
+  position: relative;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
+  background: center / cover no-repeat url('not-found.png');
+}
+
+.img {
+  margin: 0;
+  z-index: 10;
+  width: 150px;
+  height: 150px;
+  position: relative;
+  padding-top: 150px;
+}
+
+figcaption {
+  bottom: 0;
+  color: #fff;
+  width: 100%;
+  font-size: 11px;
+  padding: 0.75rem;
+  font-weight: 500;
+  position: absolute;
+}
+
+.title {
+  line-height: 1.3;
+  font-weight: 500;
+  margin-bottom: 0;
+  font-size: 0.75rem;
+}
+
+.tags {
+  font-size: 0.625rem;
+}
+
+.label {
+  top: 0;
+  right: 0;
+  color: #fff;
+  max-width: 85px;
+  font-weight: 500;
+  overflow: hidden;
+  font-size: 0.75rem;
+  position: absolute;
+  white-space: nowrap;
+  padding: 0.2rem 0.5rem;
+  text-overflow: ellipsis;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to bottom left, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+}
+
+.tags {
+  font-size: 0.625rem;
+}
+
+.overlay {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: 20;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  pointer-events: none;
+  justify-content: center;
+  transition: opacity 0.2s;
+  background-image: linear-gradient(225deg, rgba(222, 69, 189, 0.5), rgba(133, 99, 255, 0.5));
+}
+
+.result-item:hover .overlay {
+  opacity: 1;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Internet Explorer */
+@-ms-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Opera < 12.1 */
+@-o-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: none;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: none;
+  border-radius: 50px;
+  background-color: rgba(217, 85, 160, 0.4);
+}

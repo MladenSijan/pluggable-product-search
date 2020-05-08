@@ -1,0 +1,52 @@
+@import "abstracts/variables";
+
+.search-control {
+  display: flex;
+  padding: 0 2rem;
+  min-width: 830px;
+  align-items: center;
+  justify-content: space-between;
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1.5rem;
+
+    &::placeholder {
+      color: $gray;
+      font-weight: lighter;
+    }
+  }
+
+  .search {
+    user-select: none;
+    margin-right: 2rem;
+  }
+
+  span {
+    font-weight: 500;
+    color: $tag-color;
+    font-size: 1.5rem;
+    user-select: none;
+    border-radius: 4px;
+    margin-right: 0.4rem;
+    padding: 0.3rem 0.5rem;
+    transition: background-color 0.2s, color 0.2s;
+
+    &.highlight {
+      color: $tag-highlight-color;
+      background-color: $tag-highlight-bg-color;
+    }
+  }
+
+  .cancel {
+    user-select: none;
+    margin-left: 2rem;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
